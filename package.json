@@ -1,0 +1,78 @@
+{
+  "name": "parkServer",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "egg": {
+    "declarations": true
+  },
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "await-stream-ready": "^1.0.1",
+    "crc": "^3.8.0",
+    "crypto": "^1.0.1",
+    "dingtalk-robot-sender": "^1.2.0",
+    "egg": "^2.15.1",
+    "egg-bcrypt": "^1.1.0",
+    "egg-cors": "^2.2.3",
+    "egg-downloader": "^1.0.5",
+    "egg-jwt": "^3.1.7",
+    "egg-mongoose": "^3.2.0",
+    "egg-redis": "^2.4.0",
+    "egg-scripts": "^2.11.0",
+    "egg-socket.io": "^4.1.6",
+    "egg-view-nunjucks": "^2.2.0",
+    "fs-extra": "^9.0.0",
+    "glob": "^7.1.6",
+    "iconv-lite": "^0.5.1",
+    "joigoose": "^7.0.0",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "moment-precise-range-plugin": "^1.3.0",
+    "mongoose-aggregate-paginate-v2": "^1.0.4",
+    "mongoose-autopopulate": "^0.12.2",
+    "mongoose-delete": "^0.5.2",
+    "mongoose-paginate-v2": "^1.3.9",
+    "os": "^0.1.1",
+    "sharp": "^0.25.2",
+    "stack-trace": "0.0.10",
+    "stream-wormhole": "^1.1.0",
+    "superagent": "^5.2.2",
+    "system-sleep": "^1.3.6",
+    "tenpay": "^2.1.18",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.1.0",
+    "egg-bin": "^4.11.0",
+    "egg-ci": "^1.11.0",
+    "egg-mock": "^3.21.0",
+    "eslint": "^5.13.0",
+    "eslint-config-egg": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "start": "egg-scripts start --port=7002 --sticky --title=egg-server-parkServer",
+    "stop": "egg-scripts stop --title=egg-server-parkServer",
+    "dev": "egg-bin dev --sticky --port=7002",
+    "debug": "egg-bin debug",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "npm run lint && npm run cov",
+    "autod": "autod"
+  },
+  "ci": {
+    "version": "10"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "MIT"
+}

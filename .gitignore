@@ -1,0 +1,22 @@
+logs/
+npm-debug.log
+yarn-error.log
+node_modules/
+package-lock.json
+yarn.lock
+coverage/
+.idea/
+run/
+.DS_Store
+*.sw*
+*.un~
+typings/
+.nyc_output/
+app/public/uploads/*
+app/public/apk/*
+# 开源项目不公开以下文件，因为涉及到一些我们自己的服务器配置 所以如需要请联系我
+app/controller/pay.js
+app/controller/ticket.js
+app/service/dingtalk.js
+app/service/sms.js
+config/config.prod.js

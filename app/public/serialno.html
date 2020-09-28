@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小票二维码链接生成</title>
+  </head>
+  <body>
+    <input type="text" id="serialno" />
+    <textarea
+      id="textarea"
+      style="position: absolute; top: 0; left: 0; opacity: 0; z-index: -10;"
+    >
+这是幕后黑手
+</textarea
+    >
+    <button id="sure">确定</button>
+    <button id="copy">复制</button>
+    <div
+      style="border: 1px solid red; height: 300px; white-space: nowrap;"
+      id="content"
+    ></div>
+    <script>
+      document.querySelector('#sure').addEventListener('click', () => {
+        const redirect_uri = encodeURIComponent(
+          `https://park.plkjwl.pay.ddhmit.com/${
+            document.querySelector('#serialno').value
+          }`
+        );
+        document.querySelector(
+          '#content'
+        ).innerText = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa67e267c9aa80dfa&redirect_uri=${redirect_uri}?response_type=code&scope=snsapi_base#wechat_redirect`;
+      });
+      document.querySelector('#copy').addEventListener('click', () => {
+        const text = document.querySelector('#content').innerText;
+        let textarea = document.getElementById('textarea');
+        textarea.value = text; // 修改文本框的内容
+        textarea.select(); // 选中文本
+        document.execCommand('copy'); // 执行浏览器复制命令
+        alert('复制成功');
+      });
+    </script>
+  </body>
+</html>

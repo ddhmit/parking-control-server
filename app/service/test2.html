@@ -1,0 +1,156 @@
+免费时长 > 起步时长 直接 为 0
+<body>
+  <p>停车时长：<input type="text" value="0" id="parkingTime" /></p>
+  <p>免费时长：<input type="text" value="0" id="freeDuration" /></p>
+  <p>起步时长：<input type="text" value="0" id="startTime" /></p>
+  <p>起步金额：<input type="text" value="0" id="startMoney" /></p>
+  <p>计费周期：<input type="text" value="0" id="billingCycle" /></p>
+  <p>周期金额：<input type="text" value="0" id="cycleChargeAmount" /></p>
+  <p>封顶金额：<input type="text" value="0" id="capMoney" /></p>
+  <p><button onclick="go()">确定</button></p>
+</body>
+<script>
+  var go = () => {
+    res = { price: 0 };
+    // 开始计费
+    // const {
+    //   freeDuration, //免费时长
+    //   billingCycle, //计费周期
+    //   cycleChargeAmount, //周期收费金额
+    //   startTime, //起步时长
+    //   startMoney, //起步金额;
+    //   capMoney, //封顶金额;
+    // } = ;
+
+    // 开始计费
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    // 开始计费
+    let {
+        freeDuration, //免费时长
+        billingCycle, //计费周期
+        cycleChargeAmount, //周期收费金额
+        startTime, //起步时长
+        startMoney, //起步金额;
+        capMoney, //封顶金额;
+        parkingTime, // 停车时长
+      } = (charge = {
+        parkingTime: +document.getElementById('parkingTime').value,
+        freeDuration: +document.getElementById('freeDuration').value,
+        billingCycle: +document.getElementById('billingCycle').value,
+        cycleChargeAmount: +document.getElementById('cycleChargeAmount').value,
+        startTime: +document.getElementById('startTime').value,
+        startMoney: +document.getElementById('startMoney').value,
+        capMoney: +document.getElementById('capMoney').value,
+      }),
+      dayMinutes = 24 * 60; // 一天的分钟数
+
+    const calculateTotal = (values) => {
+      let {
+        parkingTime,
+        freeDuration,
+        startTime,
+        startMoney,
+        capMoney,
+      } = values;
+      let total = 0;
+      if (parkingTime >= freeDuration && parkingTime < startTime) {
+        // 不小于免费时长并且不超过起步时间就是起步金额
+        total = Math.min(startMoney, capMoney);
+      } else if (startTime >= freeDuration && parkingTime >= startTime) {
+        /* 开始周期计费 */
+        total = calculate24Money(values);
+        /* 24H 以上 */
+        if (parkingTime >= dayMinutes) {
+          total += calculateOver24Money(values);
+        }
+      }
+
+      return total;
+    };
+
+    /**
+     * 真实的每日封顶金额
+     *
+     * @param {IValues} { startTime, startMoney, billingCycle, cycleChargeAmount, capMoney }
+     * @param {boolean} [in24H=true]
+     * @returns {number}
+     */
+    const calculateRealMaxMoney = (
+      { startTime, startMoney, billingCycle, cycleChargeAmount, capMoney },
+      in24H = true
+    ) => {
+      let overMins = dayMinutes;
+      let moneyByCal = Math.ceil(overMins / billingCycle) * cycleChargeAmount;
+      if (in24H) {
+        if (startTime >= dayMinutes) {
+          // 如果起始时长超过一天的话，第一天的周期累计部分为 0
+          moneyByCal = 0;
+        } else {
+          overMins = dayMinutes - startTime;
+          moneyByCal = Math.ceil(overMins / billingCycle) * cycleChargeAmount;
+        }
+        // 一天内需要计算起步金额
+        moneyByCal = startMoney + moneyByCal;
+      }
+
+      return Math.min(moneyByCal, capMoney);
+    };
+    /**
+     * 24小时内的停车计费
+     *
+     * @param {IValues} values
+     * @returns
+     */
+    const calculate24Money = (values) => {
+      let {
+        parkingTime,
+        startTime,
+        startMoney,
+        billingCycle,
+        cycleChargeAmount,
+      } = values;
+      let realMaxMoney = calculateRealMaxMoney(values); //  每日封顶金额
+      if (startTime >= dayMinutes) {
+        // 如果起始时间大于一天的话，直接返回每日封顶金额
+        return realMaxMoney;
+      }
+      let calculatedValue =
+        startMoney +
+        Math.ceil(
+          (Math.min(parkingTime, dayMinutes) - startTime) / billingCycle
+        ) *
+          cycleChargeAmount;
+      return Math.min(calculatedValue, realMaxMoney);
+    };
+    /**
+     * 计算超过 24H 的费用
+     *
+     * @param {IValues} values
+     * @returns
+     */
+    const calculateOver24Money = (values) => {
+      let {
+        parkingTime,
+        startTime,
+        billingCycle,
+        cycleChargeAmount,
+        capMoney,
+      } = values;
+      let realMaxMoney = calculateRealMaxMoney(values, false); // 每天真实的封顶金额
+      let overMins = parkingTime - Math.max(dayMinutes, startTime); // 起始时间可能超过 24h
+      let overDays = Math.floor(overMins / dayMinutes);
+      let restMins = overMins % dayMinutes;
+      let daysMoney = overDays * realMaxMoney;
+
+      return (
+        daysMoney +
+        Math.min(
+          Math.ceil(restMins / billingCycle) * cycleChargeAmount,
+          capMoney
+        ) // 封顶金额可能比计算值小
+      );
+    };
+    return console.log(calculateTotal(charge));
+  };
+</script>

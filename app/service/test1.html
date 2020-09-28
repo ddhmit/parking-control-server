@@ -1,0 +1,117 @@
+<body>
+  <p>停车时长：<input type="text" value="0" id="parkingTime" /></p>
+  <p>免费时长：<input type="text" value="0" id="freeDuration" /></p>
+  <p>起步时长：<input type="text" value="0" id="startTime" /></p>
+  <p>起步金额：<input type="text" value="0" id="startMoney" /></p>
+  <p>计费周期：<input type="text" value="0" id="billingCycle" /></p>
+  <p>周期金额：<input type="text" value="0" id="cycleChargeAmount" /></p>
+  <p>封顶金额：<input type="text" value="0" id="capMoney" /></p>
+  <p><button onclick="go()">确定</button></p>
+</body>
+<script>
+  var go = () => {
+    res = { price: 0 };
+    // 开始计费
+    // const {
+    //   freeDuration, //免费时长
+    //   billingCycle, //计费周期
+    //   cycleChargeAmount, //周期收费金额
+    //   startTime, //起步时长
+    //   startMoney, //起步金额;
+    //   capMoney, //封顶金额;
+    // } = ;
+
+    // 开始计费
+    //////////////////////////////////////////////////////////////////////////////////////////////
+
+    // 开始计费
+    let {
+        freeDuration, //免费时长
+        billingCycle, //计费周期
+        cycleChargeAmount, //周期收费金额
+        startTime, //起步时长
+        startMoney, //起步金额;
+        capMoney, //封顶金额;
+        parkingTime, // 停车时长
+      } = {
+        parkingTime: +document.getElementById('parkingTime').value,
+        freeDuration: +document.getElementById('freeDuration').value,
+        billingCycle: +document.getElementById('billingCycle').value,
+        cycleChargeAmount: +document.getElementById('cycleChargeAmount').value,
+        startTime: +document.getElementById('startTime').value,
+        startMoney: +document.getElementById('startMoney').value,
+        capMoney: +document.getElementById('capMoney').value,
+      },
+      dayMinutes = 24 * 60; // 一天的分钟数
+
+    // 单日金额计算
+    const dayMoneyCalc = ({ calcTime, in24Hours = 0 }) => {
+      console.log('单日金额计算');
+      console.log({ calcTime, in24Hours });
+      let dayPrice = 0;
+      if (billingCycle) {
+        dayPrice =
+          Math.trunc(
+            (calcTime - (in24Hours && startTime) + billingCycle - 1) /
+              billingCycle
+          ) *
+            cycleChargeAmount +
+          (in24Hours && startMoney);
+      }
+      return {
+        isCap: dayPrice >= capMoney,
+        price: Math.min(dayPrice, capMoney),
+      };
+    };
+
+    // 多日封顶与不封顶的处理方式
+    const dayMoneyIsCap = ({ isCap, price, integerDays, decimalDayMinus }) => {
+      console.log('多日封顶与不封顶的处理方式');
+      console.log({ isCap, price, integerDays, decimalDayMinus });
+      const _decimalPrice = dayMoneyCalc({ calcTime: decimalDayMinus }).price;
+      if (!isCap) {
+        return (
+          price +
+          (integerDays - 1) *
+            dayMoneyCalc({
+              calcTime: dayMinutes,
+            }).price +
+          _decimalPrice
+        );
+      }
+      return price * integerDays + _decimalPrice;
+    };
+
+    // 应缴费
+    res.price = (() => {
+      let total = 0;
+      const minPrice = Math.min(startMoney, capMoney);
+      if (parkingTime <= startTime) {
+        return minPrice;
+      }
+      const startTimeOverDayMinutes = startTime > dayMinutes;
+      const _dayMoneyCalc = dayMoneyCalc({
+        calcTime: Math.min(parkingTime, dayMinutes),
+        in24Hours: startTimeOverDayMinutes ? 0 : 1,
+      });
+      console.log(_dayMoneyCalc);
+      if (parkingTime > dayMinutes) {
+        const lackParkingTime = startTimeOverDayMinutes
+          ? parkingTime - startTime
+          : parkingTime;
+        total = dayMoneyIsCap({
+          ..._dayMoneyCalc,
+          integerDays: Math.trunc(lackParkingTime / dayMinutes), // 整数部分天,
+          decimalDayMinus: lackParkingTime % dayMinutes, // 剩余分钟数,
+        });
+      } else {
+        total = _dayMoneyCalc.price;
+      }
+      if (startTimeOverDayMinutes) {
+        total += minPrice;
+      }
+      return total;
+    })();
+    return console.log(res);
+  };
+</script>
