@@ -1,12 +1,16 @@
 # 停车控制系统
 
+![](https://user-images.githubusercontent.com/66936909/94420163-57952580-01b6-11eb-87ec-3f866b383e24.png)
+
 安全、高效、可定制的智慧停车解决方案，全套开源
 
-## 本项目一共分为 3 端
+## 本项目一共分为 5 端 可根据实际情况选择是否使用
 
 1. 服务端 https://github.com/ddhmit/parking-control-server
 2. APP 端 https://github.com/ddhmit/parking-control-app
 3. 管理端 https://github.com/ddhmit/parking-control-admin
+4. 小票端 https://github.com/ddhmit/parking-control-ticket
+5. 微信扫码支付预览 https://github.com/ddhmit/parking-control-wxpay
 
 ## 特性
 
@@ -24,18 +28,31 @@
 
 该系统服务端理论上兼容全平台，目前我们在生产环境中是在 ubuntu 上使用 docker 部署的
 该套系统采用 web 全栈解决方案，服务端 node.js，APP ionic，管理端 react
-但还包括 docker，eggjs，redis，mongodb，socket.io，微信支付等技术细节
+但还包括 docker，eggjs，redis，mongodb，socket.io，typescript，微信支付等技术细节
 
 ## 使用
 
 ### 服务端部署方法
 
-1. ubuntu `cd ../srv`
-2. ubuntu `git clone https://github.com/ddhmit/parking-control-server.git`
-3. ubuntu `docker network create net-1`
-4. ubuntu `docker run -ti -p 7002:7002 --name parkserver --network net-1 --network-alias parkserver --restart always -v /srv/parking-control-server:/srv/parking-control-server -v /logs:/root/logs -v /etc/localtime:/etc/localtime:ro --privileged=true -d node sh -c 'cd /srv/parking-control-server && npm i && npm run start'`
+省略 ubuntu 上安装 docker 的步骤
+仅演示 ubuntu 上的服务端部署
 
-### 前端及 APP 打包部署
+1. `cd ../srv`
+2. `git clone https://github.com/ddhmit/parking-control-server.git`
+3. `docker network create net-1`
+4. `docker run -ti -p 7002:7002 --name parkserver --network net-1 --network-alias parkserver --restart always -v /srv/parking-control-server:/srv/parking-control-server -v /logs:/root/logs -v /etc/localtime:/etc/localtime:ro --privileged=true -d node sh -c 'cd /srv/parking-control-server && npm i && npm run start'`
+
+### 前端
+
+管理端、小票端、微信扫码支付预览 及 APP 打包部署
+均使用以下方式
 
 1. `npm i`
 2. `npm run build`
+
+## 截图
+
+![](https://user-images.githubusercontent.com/66936909/94420486-ce322300-01b6-11eb-84af-fd1fdd81d565.png)
+![](https://user-images.githubusercontent.com/66936909/94420774-37199b00-01b7-11eb-9d4c-8e4753537067.png)
+![]()
+![](https://user-images.githubusercontent.com/66936909/94421786-a80d8280-01b8-11eb-8b03-4a5dceefcd4d.png)
